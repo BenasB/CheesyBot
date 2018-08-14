@@ -2,7 +2,8 @@
 
 A discord bot for cheesy jokes. Basic functionality.
 
-The bot token should be located at /CheesyBot/token.txt
+The bot token should be located at `/CheesyBot/token.txt`.
+
 ---
 
 Built as an exercise for asynchronous programming.

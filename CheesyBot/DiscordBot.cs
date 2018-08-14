@@ -29,6 +29,9 @@ namespace CheesyBot
             // Event subscriptions
             client.Log += Log;
             client.UserJoined += AnnounceUserJoined;
+            client.UserLeft += UserLeft;
+            client.UserBanned += UserBanned;
+            client.ChannelCreated += ChannelCreated;
 
             await client.SetGameAsync("Eating cheese");
 
@@ -41,11 +44,30 @@ namespace CheesyBot
             await Task.Delay(-1);
         }
 
+        private async Task ChannelCreated(SocketChannel channel)
+        {
+            if (channel is SocketTextChannel)
+                await (channel as SocketTextChannel).SendMessageAsync("A wild channel appears");
+        }
+
+        private async Task UserLeft(SocketGuildUser user)
+        {
+            SocketGuild guild = user.Guild;
+            SocketTextChannel channel = guild.DefaultChannel;
+            await channel.SendMessageAsync($"Farewell, {user.Mention}.");
+        }
+
+        private async Task UserBanned(SocketUser user, SocketGuild guild)
+        {
+            SocketTextChannel channel = guild.DefaultChannel;
+            await channel.SendMessageAsync($"{user.Mention} was hit by a ban hammer");
+        }
+
         private async Task AnnounceUserJoined(SocketGuildUser user)
         {
             SocketGuild guild = user.Guild;
             SocketTextChannel channel = guild.DefaultChannel;
-            await channel.SendMessageAsync($"Welcome, {user.Mention} to the {guild.Name}");
+            await channel.SendMessageAsync($"Welcome, {user.Mention} to the {guild.Name}.");
         }
 
         private Task Log(LogMessage arg)

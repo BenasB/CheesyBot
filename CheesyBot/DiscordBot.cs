@@ -30,6 +30,8 @@ namespace CheesyBot
             client.Log += Log;
             client.UserJoined += AnnounceUserJoined;
 
+            await client.SetGameAsync("Eating cheese");
+
             await RegisterCommandsAsync();
 
             await client.LoginAsync(TokenType.Bot, botToken);

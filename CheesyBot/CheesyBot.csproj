@@ -130,6 +130,7 @@
   <ItemGroup>
     <Compile Include="Auth.cs" />
     <Compile Include="DiscordBot.cs" />
+    <Compile Include="Modules\Cheese.cs" />
     <Compile Include="Modules\Ping.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

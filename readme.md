@@ -2,7 +2,8 @@
 
 A discord bot for cheesy jokes. Basic functionality.
 
-The bot token should be located at `/CheesyBot/token.txt`.
+The bot token should be located at the same directory as the .exe with the name `token.txt`.
+An empty token.txt will be created if the file wasn't found.
 
 ---
 

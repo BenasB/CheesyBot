@@ -3,7 +3,7 @@ using Discord.Commands;
 using Discord.WebSocket;
 using Microsoft.Extensions.DependencyInjection;
 using System;
-using System.Linq;
+using System.Collections.Generic;
 using System.Reflection;
 using System.Threading.Tasks;
 
@@ -27,6 +27,12 @@ namespace CheesyBot
 
             string botToken = Auth.GetBotToken();
 
+            if (botToken == null)
+            {
+                Console.ReadKey();
+                return;
+            }
+
             // Event subscriptions
             client.Log += Log;
             client.UserJoined += AnnounceUserJoined;
@@ -38,7 +44,7 @@ namespace CheesyBot
 
             await RegisterCommandsAsync();
 
-            await client.LoginAsync(TokenType.Bot, botToken);
+            await client.LoginAsync(TokenType.Bot, botToken);       
 
             await client.StartAsync();
 

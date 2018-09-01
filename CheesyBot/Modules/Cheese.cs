@@ -10,7 +10,7 @@ namespace CheesyBot.Modules
     [Group ("cheese")]
     public class Cheese : ModuleBase<SocketCommandContext>
     {
-        static readonly string path;
+        const string path = "jokes.txt";
 
         static List<string> jokes;
         static List<string> Jokes
@@ -23,14 +23,15 @@ namespace CheesyBot.Modules
             }
         }
 
-        static Cheese()
-        {
-            path = Path.GetDirectoryName(Path.GetDirectoryName(Directory.GetCurrentDirectory())) + "/jokes.txt";
-        }
-
         [Command]
         public async Task TellAJokeAsync()
         {
+            if (Jokes.Count == 0)
+            {
+                await ReplyAsync("No jokes found.");
+                return;
+            }
+
             Random rnd = new Random();
             int randomIndex = rnd.Next(Jokes.Count);
             string joke = Jokes[randomIndex];
@@ -64,6 +65,7 @@ namespace CheesyBot.Modules
                 Jokes.Add(joke);
 
             SaveJokes();
+
             if (newJokes.Length == 1)
                 await ReplyAsync("Joke added!");
             else
@@ -73,17 +75,25 @@ namespace CheesyBot.Modules
         [Command ("list")]
         public async Task ListAllJokesAsync()
         {
+            if (Jokes.Count == 0)
+            {
+                await ReplyAsync("No jokes found.");
+                return;
+            }
+
+            const string separator = ". ";
             StringBuilder builder = new StringBuilder();
+
             for (int i = 0; i < Jokes.Count; i++)
             {
-                if (builder.Length + 3 + Jokes[i].Length >= 2000)
+                if (builder.Length + i.ToString().Length + separator.Length + Jokes[i].Length >= 2000)
                 {
                     await ReplyAsync(builder.ToString());
                     builder.Clear();
                 }
 
                 builder.Append(i);
-                builder.Append(". ");
+                builder.Append(separator);
                 builder.Append(Jokes[i]);
 
                 if (i != Jokes.Count - 1)
@@ -94,7 +104,14 @@ namespace CheesyBot.Modules
         }
 
         static List<string> LoadJokes()
-        {         
+        {
+            if (!File.Exists(path))
+            {
+                Console.WriteLine("The jokes file couldn't be found.");
+                File.Create(path);
+                return new List<string>();
+            }
+
             return new List<string>(File.ReadAllLines(path));
         }
 

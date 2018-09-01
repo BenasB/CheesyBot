@@ -1,6 +1,7 @@
 ﻿using Discord.Commands;
 using System;
 using System.IO;
+using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Collections.Generic;
@@ -44,12 +45,12 @@ namespace CheesyBot.Modules
         {
             if (id < 0)
             {
-                await ReplyAsync("The id can't be negative");
+                await ReplyAsync($"The id {id} can't be negative.");
                 return;
             }
             else if (id >= Jokes.Count)
             {
-                await ReplyAsync("Can't find a joke with that id");
+                await ReplyAsync($"Can't find a joke with that id {id}.");
                 return;
             }
 
@@ -70,6 +71,40 @@ namespace CheesyBot.Modules
                 await ReplyAsync("Joke added!");
             else
                 await ReplyAsync("Jokes added!");
+        }
+
+        [Command("remove"), RequireOwner]
+        public async Task RemoveAJokeAsync(params int[] ids)
+        {
+            ids = ids.OrderByDescending(x => x).ToArray();
+            int removedJokes = 0;
+
+            foreach (int id in ids)
+            {
+                if (id < 0)
+                {
+                    await ReplyAsync($"The id {id} can't be negative.");
+                    continue;
+                }
+                else if (id >= Jokes.Count)
+                {
+                    await ReplyAsync($"Can't find a joke with that id {id}.");
+                    continue;
+                }
+
+                Jokes.RemoveAt(id);
+                removedJokes++;
+            }
+
+            if (removedJokes == 0)
+                return;
+            else
+                SaveJokes();
+
+            if (removedJokes == 1)
+                await ReplyAsync("Joke removed!");
+            else
+                await ReplyAsync($"{removedJokes} jokes removed!");
         }
 
         [Command ("list")]
